@@ -16,6 +16,6 @@ class SimpleDescribeGroupService(implicit mat: Materializer) extends DescribeGro
 
   override def describeGroupsReplying(in: DescribeGroupsRequest): Source[DescribeGroupsReply, NotUsed] = {
     val reply = DescribeGroupsReply().addDescriptors(ConsumerGroupDescriptor().withGroupId("id"))
-    Source(Seq(reply, reply, reply))
+    Source(Seq(reply))
   }
 }
