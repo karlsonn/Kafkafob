@@ -90,6 +90,7 @@ lazy val kafkafob = crossProject(JSPlatform, JVMPlatform).in(file("."))
       // The Akka HTTP overwrites are required because Akka-gRPC depends on 10.1.x
       "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
       "com.typesafe.akka" %% "akka-http2-support" % akkaHttpVersion,
+      "ch.megard" %% "akka-http-cors" % "1.1.0",
 
       "com.typesafe.akka" %% "akka-actor-testkit-typed" % akkaVersion % Test,
       "com.typesafe.akka" %% "akka-stream-testkit" % akkaVersion % Test,
