@@ -12,7 +12,7 @@ import scala.scalajs.js.annotation.JSExport
 
 object UIApp {
   @JSExport
-  def main2(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit = {
     val web = DescribeGroupsServiceGrpcWeb.stub(Channels.grpcwebChannel("http://localhost:8081"))
     import scala.scalajs.concurrent.JSExecutionContext.Implicits._
 
