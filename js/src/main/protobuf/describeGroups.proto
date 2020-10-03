@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "io.shad862.kafkafob.admin.proto";
+option java_outer_classname = "DescribeGroupProto";
+
+//https://scalapb.github.io/docs/validation
+//https://scalapb.github.io/docs/scala.js
+
+import "scalapb/scalapb.proto";
+import "google/protobuf/descriptor.proto";
+
+extend google.protobuf.FieldOptions {
+  string option1 = 1000;
+}
+
+service DescribeGroupsService {
+  rpc DescribeGroups (DescribeGroupsRequest) returns (DescribeGroupsReply) {}
+  rpc DescribeGroupsReplying (DescribeGroupsRequest) returns (stream DescribeGroupsReply) {}
+}
+
+message DescribeGroupsRequest {
+  int64 limit = 1;
+}
+
+message DescribeGroupsReply {
+  repeated ConsumerGroupDescriptor descriptors = 1;
+}
+
+message ConsumerGroupDescriptor {
+  string groupId = 1 [(option1) = "option one"];;
+  repeated MemberDescription members = 2;
+}
+
+message MemberDescription {
+  string clientId = 1;
+  string consumerId = 2;
+  string host = 3;
+}

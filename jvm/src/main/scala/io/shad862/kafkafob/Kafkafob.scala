@@ -31,7 +31,7 @@ class Kafkafob(implicit system: ActorSystem) {
     val gRPCWebBinding = Http().bindAndHandleAsync(gRPCWebService, "127.0.0.1", 8081, HttpConnectionContext())
 
     gRPCBinding.foreach { binding => println(s"gRPC server[gRPC binding] bound to: ${binding.localAddress}") }
-    gRPCWebBinding.foreach { binding => println(s"gRPC server[gRPC binding] bound to: ${binding.localAddress}") }
+    gRPCWebBinding.foreach { binding => println(s"gRPCWeb server[gRPC web binding] bound to: ${binding.localAddress}") }
 
     gRPCBinding
   }

@@ -16,23 +16,34 @@ lazy val root = project
   .settings(
     publish := {},
     publishLocal := {}
-  )
-*/
+  )*/
 
 lazy val kafkafob = crossProject(JSPlatform, JVMPlatform).in(file("."))
   .settings(
     name := "Kafkafob",
     version := "0.1"
   )
-  .jsConfigure(_.enablePlugins(ScalaJSBundlerPlugin, JSDependenciesPlugin))
+  .jsConfigure(_.enablePlugins(ScalaJSBundlerPlugin, JSDependenciesPlugin, ScalaJSPlugin))
   .jsSettings(
     testFrameworks += new TestFramework("utest.runner.Framework"),
+    PB.targets in Compile := Seq(
+      //scalapb.gen() -> (sourceManaged in Compile).value,
+      scalapb.gen(grpc=false) -> (sourceManaged in Compile).value,
+      scalapb.grpcweb.GrpcWebCodeGenerator -> (sourceManaged in Compile).value
+    ),
+
     libraryDependencies ++= Seq(
       "org.scala-js" %%% "scalajs-dom" % scalaJSDomVersion,
       "com.github.japgolly.scalajs-react" %%% "core" % scalaJSReactVersion,
       "com.github.japgolly.scalajs-react" %%% "extra" % scalaJSReactVersion,
       "com.github.japgolly.scalacss" %%% "core" % scalaCssVersion,
       "com.github.japgolly.scalacss" %%% "ext-react" % scalaCssVersion,
+
+      "com.thesamet.scalapb" %%% "scalapb-runtime" % scalapb.compiler.Version.scalapbVersion, //"0.10.8"
+      "com.thesamet.scalapb" %%% "scalapb-runtime" % scalapb.compiler.Version.scalapbVersion % "protobuf",
+      "com.thesamet.scalapb.grpcweb" %%% "scalapb-grpcweb" % scalapb.grpcweb.BuildInfo.version,
+
+      "com.lihaoyi" %%% "scalatags" % "0.9.2",
       "com.lihaoyi" %%% "utest" % "0.7.5" % Test withSources(),
     ),
 
