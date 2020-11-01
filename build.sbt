@@ -116,4 +116,15 @@ lazy val kafkafob = crossProject(JSPlatform, JVMPlatform).in(file("."))
       "com.lihaoyi" %% "utest" % "0.7.5" % Test withSources(),
       "org.scalacheck" %% "scalacheck" % "1.14.3" % Test withSources(),
     ),
+
+    scalacOptions ++= Seq(
+      "-encoding", "utf8", // Option and arguments on same line
+      //"-Xfatal-warnings",  // New lines for each options
+      //"-deprecation",
+      "-unchecked",
+      "-language:implicitConversions",
+      "-language:higherKinds",
+      "-language:existentials",
+      "-language:postfixOps"
+    )
   )

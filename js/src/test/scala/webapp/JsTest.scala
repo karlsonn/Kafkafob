@@ -1,6 +1,5 @@
 package webapp
 
-import com.trueaccord.advanced._
 import io.shad862.kafkafob.admin.proto.describeGroups.{ConsumerGroupDescriptor, DescribeGroupsProto}
 import utest._
 
