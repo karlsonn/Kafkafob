@@ -18,21 +18,103 @@ lazy val root = project
     publishLocal := {}
   )*/
 
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption.REPLACE_EXISTING
+
+lazy val start = TaskKey[Unit]("start")
+lazy val dist = TaskKey[File]("dist")
+
 lazy val kafkafob = crossProject(JSPlatform, JVMPlatform).in(file("."))
   .settings(
     name := "Kafkafob",
     version := "0.1"
   )
-  .jsConfigure(_.enablePlugins(ScalaJSBundlerPlugin, JSDependenciesPlugin, ScalaJSPlugin))
+  .jsConfigure(_.enablePlugins(ScalaJSBundlerPlugin, JSDependenciesPlugin, ScalaJSPlugin, ScalablyTypedConverterPlugin))
   .jsSettings(
-    testFrameworks += new TestFramework("utest.runner.Framework"),
+    //testFrameworks += new TestFramework("utest.runner.Framework"),
     PB.targets in Compile := Seq(
       //scalapb.gen() -> (sourceManaged in Compile).value,
       scalapb.gen(grpc=false) -> (sourceManaged in Compile).value,
       scalapb.grpcweb.GrpcWebCodeGenerator -> (sourceManaged in Compile).value
     ),
 
-    libraryDependencies ++= Seq(
+    Compile / npmDependencies += "react" -> "16.13.1",
+    Compile / npmDependencies += "react-dom" -> "16.13.1",
+    Compile / npmDependencies += "@types/react" -> "16.9.42",
+    Compile / npmDependencies += "@types/react-dom" -> "16.9.8",
+    Compile / npmDependencies += "csstype" -> "2.6.11",
+    Compile / npmDependencies += "@types/prop-types" -> "15.7.3",
+    Compile / npmDependencies += "antd" -> "4.5.1",
+    Compile / npmDependencies += "grpc-web" -> "1.2.1",
+
+    stTypescriptVersion := "3.9.3",
+
+    Compile / npmDevDependencies += "file-loader" -> "6.0.0",
+    Compile / npmDevDependencies += "style-loader" -> "1.2.1",
+    Compile / npmDevDependencies += "css-loader" -> "3.5.3",
+    Compile / npmDevDependencies += "html-webpack-plugin" -> "4.3.0",
+    Compile / npmDevDependencies += "copy-webpack-plugin" -> "5.1.1",
+    Compile / npmDevDependencies += "webpack-merge" -> "4.2.2",
+    Compile / npmDevDependencies += "url-loader" -> "3.0.0",
+
+    Compile / fullOptJS / webpackDevServerExtraArgs += "--mode=production",
+    Compile / fastOptJS / webpackDevServerExtraArgs += "--mode=development",
+
+    libraryDependencies += "me.shadaj" %%% "slinky-web" % "0.6.6",
+    libraryDependencies += "me.shadaj" %%% "slinky-hot" % "0.6.6",
+    libraryDependencies += "org.scalatest" %%% "scalatest" % "3.1.1" % Test,
+    libraryDependencies += "com.thesamet.scalapb" %%% "scalapb-runtime" % scalapb.compiler.Version.scalapbVersion, //"0.10.8"
+    libraryDependencies += "com.thesamet.scalapb" %%% "scalapb-runtime" % scalapb.compiler.Version.scalapbVersion % "protobuf",
+    libraryDependencies += "com.thesamet.scalapb.grpcweb" %%% "scalapb-grpcweb" % scalapb.grpcweb.BuildInfo.version,
+
+    scalacOptions += "-Ymacro-annotations",
+
+    webpackConfigFile := Some(baseDirectory.value / "webpack" / "custom.webpack.config.js"),
+
+    useYarn := true,
+    webpackDevServerPort := 8080,
+    stFlavour := Flavour.Slinky,
+
+    scalacOptions ++= ScalacOptions.flags,
+    scalaJSUseMainModuleInitializer := true,
+    scalaJSLinkerConfig := scalaJSLinkerConfig.value.withSourceMap(true),
+
+    start := {
+      (Compile / fastOptJS / startWebpackDevServer).value
+    },
+
+    dist := {
+      val artifacts = (Compile / fullOptJS / webpack).value
+      val artifactFolder = (Compile / fullOptJS / crossTarget).value
+      val distFolder = (ThisBuild / baseDirectory).value / "docs" / moduleName.value
+
+      distFolder.mkdirs()
+      artifacts.foreach { artifact =>
+        val target = artifact.data.relativeTo(artifactFolder) match {
+          case None          => distFolder / artifact.data.name
+          case Some(relFile) => distFolder / relFile.toString
+        }
+
+        Files.copy(artifact.data.toPath, target.toPath, REPLACE_EXISTING)
+      }
+
+      val indexFrom = baseDirectory.value / "src/main/js/index.html"
+      val indexTo = distFolder / "index.html"
+
+      val indexPatchedContent = {
+        import collection.JavaConverters._
+        Files
+          .readAllLines(indexFrom.toPath, IO.utf8)
+          .asScala
+          .map(_.replaceAllLiterally("-fastopt-", "-opt-"))
+          .mkString("\n")
+      }
+
+      Files.write(indexTo.toPath, indexPatchedContent.getBytes(IO.utf8))
+      distFolder
+    }
+
+/*    libraryDependencies ++= Seq(
       "org.scala-js" %%% "scalajs-dom" % scalaJSDomVersion,
       "com.github.japgolly.scalajs-react" %%% "core" % scalaJSReactVersion,
       "com.github.japgolly.scalajs-react" %%% "extra" % scalaJSReactVersion,
@@ -82,7 +164,7 @@ lazy val kafkafob = crossProject(JSPlatform, JVMPlatform).in(file("."))
     dependencyOverrides ++= Seq(
       "org.webjars.npm" % "js-tokens" % "4.0.0",
       "org.webjars.npm" % "scheduler" % "0.14.0"
-    )
+    )*/
   )
   .jvmConfigure(_.enablePlugins(AkkaGrpcPlugin))
   .jvmSettings(

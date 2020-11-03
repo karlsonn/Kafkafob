@@ -25,7 +25,7 @@ class Kafkafob(implicit system: ActorSystem) {
     implicit val materializer: Materializer = ActorMaterializer()
 
     val gRPCService: HttpRequest => Future[HttpResponse] = DescribeGroupsServiceHandler(new SimpleDescribeGroupService())
-    val gRPCBinding = Http().bindAndHandleAsync(gRPCService, "127.0.0.1", 8080, HttpConnectionContext())
+    val gRPCBinding = Http().bindAndHandleAsync(gRPCService, "127.0.0.1", 8082, HttpConnectionContext())
 
     val gRPCWebService = WebHandler.grpcWebHandler { case request: HttpRequest => gRPCService.apply(request) }
     val gRPCWebBinding = Http().bindAndHandleAsync(gRPCWebService, "127.0.0.1", 8081, HttpConnectionContext())

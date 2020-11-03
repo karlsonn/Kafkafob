@@ -14,6 +14,6 @@ class SimpleDescribeGroupService(implicit mat: Materializer) extends DescribeGro
     Future.successful(DescribeGroupsReply(Seq(ConsumerGroupDescriptor("Single group"))))
   }
   override def describeGroupsReplying(in: DescribeGroupsRequest): Source[DescribeGroupsReply, NotUsed] = {
-    Source(1 to 100).map(value => DescribeGroupsReply(Seq(ConsumerGroupDescriptor(s"Group $value")))).throttle(1, 2 seconds)
+    Source(1 to 5).map(value => DescribeGroupsReply(Seq(ConsumerGroupDescriptor(s"Group $value")))).throttle(1, 2 seconds)
   }
 }

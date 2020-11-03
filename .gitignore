@@ -6,3 +6,5 @@
 jvm/target
 js/target
 project/project/target
+/.bsp/sbt.json
+/js/yarn.lock
