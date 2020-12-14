@@ -1,4 +1,6 @@
-addSbtPlugin("com.thesamet" % "sbt-protoc" % "1.0.0-RC2")
+resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
 
-libraryDependencies += "com.thesamet.scalapb" %% "compilerplugin" % "0.10.8"
-libraryDependencies += "com.thesamet.scalapb.grpcweb" %% "scalapb-grpcweb-code-gen" % "0.4.1"
+addSbtPlugin("com.thesamet" % "sbt-protoc" % "1.0.0-RC4")
+
+libraryDependencies += "com.thesamet.scalapb" %% "compilerplugin" % "0.11.0-M4"
+libraryDependencies += "com.thesamet.scalapb.grpcweb" %% "scalapb-grpcweb-code-gen" % "0.4.2"
