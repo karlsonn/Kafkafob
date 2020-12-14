@@ -8,3 +8,9 @@ js/target
 project/project/target
 /.bsp/sbt.json
 /js/yarn.lock
+/project/project/project/target/
+/project/project/project/project/target
+.metals
+.bloop
+.vscode
+metals.sbt
