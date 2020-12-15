@@ -9,10 +9,10 @@ import io.shad862.kafkafob.admin.proto.{DescribeGroupsRequest, DescribeGroupsSer
 object gRPCClient {
   def main(args: Array[String]): Unit = {
 
-    implicit val system = ActorSystem("HelloWorldClient")
+    implicit val system = ActorSystem("gRPCActorSystem")
     implicit val contextExecutor = system.dispatcher
 
-    val client: DescribeGroupsServiceClient = DescribeGroupsServiceClient(GrpcClientSettings.connectToServiceAt("127.0.0.1", 8080).withTls(false))
+    val client: DescribeGroupsServiceClient = DescribeGroupsServiceClient(GrpcClientSettings.connectToServiceAt("127.0.0.1", 8082).withTls(false))
 
     client.describeGroups(DescribeGroupsRequest()).onComplete(println(_))
     client.describeGroupsReplying(DescribeGroupsRequest()).runWith(Sink.foreach(println(_)))

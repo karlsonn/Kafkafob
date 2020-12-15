@@ -7,7 +7,7 @@ option java_outer_classname = "DescribeGroupProto";
 //https://scalapb.github.io/docs/validation
 //https://scalapb.github.io/docs/scala.js
 
-import "scalapb/scalapb.proto";
+//import "scalapb/scalapb.proto";
 import "google/protobuf/descriptor.proto";
 
 extend google.protobuf.FieldOptions {
